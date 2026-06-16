@@ -75,3 +75,14 @@ Merging the LEF files and preparing the working directories.
 ```tcl
 prep -design picorv32a
 ```
+
+#### Synthesis:
+
+```tcl
+run_synthesis
+```
+
+```
+Flop Ratio Calculation:
+Flop Ratio = (Total D Flip-Flops) / (Total Cells) = 1613 / 15762 ≈ 10.23%
+```
