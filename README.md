@@ -36,10 +36,24 @@ A standard C program traverses several abstraction layers before physical execut
 
 Historically, custom ASIC design was blocked by expensive proprietary tools and strict NDAs for Process Design Kits (PDKs). True open-source chip design requires:
 
-Open RTL (e.g., RISC-V cores).
+1. Open RTL (e.g., RISC-V cores).
 
-Open EDA Tools (for synthesis, routing, and simulation).
+2. Open EDA Tools (for synthesis, routing, and simulation).
 
-Open PDKs (foundry-specific data and standard cells).
+3. Open PDKs (foundry-specific data and standard cells).
 
 Google and SkyWater Technology's release of the Sky130 PDK in 2020 broke the final barrier, granting global access to a manufacturable 130nm process node.
+
+The OpenLANE Flow
+OpenLANE is an automated script framework that orchestrates several open-source EDA tools to take an RTL netlist to a manufacturable GDSII file.
+
+| Stage | Tool(s) Used |
+|---|---|
+| Synthesis | "Yosys, ABC" |
+| Floorplanning & PDN | OpenROAD |
+| Placement | OpenROAD |
+| Clock Tree Synthesis (CTS) | TritonCTS |
+| Routing | "FastRoute, TritonRoute" |
+| Parasitic Extraction | OpenRCX |
+| Timing Analysis | OpenSTA |
+| Layout & DRC/LVS | "Magic, Netgen, KLayout" |
