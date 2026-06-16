@@ -112,4 +112,66 @@ To prevent severe IR drop across the silicon, a multi-layered grid of power (VDD
 ```tcl
 run_floorplan
 ```
-                          
+#### Reviewing via Magic VLSI:
+
+```bash
+cd results/floorplan/
+magic -T /home/vsduser/Desktop/OpenLane/designs/picorv32a/sky130A/libs.tech/magic/sky130A.tech \
+      lef read ../../tmp/merged.nom.lef \
+      def read picorv32a.def &
+```
+
+#### Running Standard Cell Placement:
+
+```tcl
+run_floorplan
+```
+After this completes, we can inspect the DEF file that was generated:
+
+```bash
+cd results/floorplan/
+less picorv32a.def
+```
+
+#### Viewing the Floorplan in Magic
+
+```bash
+magic -T /home/vsduser/Desktop/OpenLane/designs/picorv32a/sky130A/libs.tech/magic/sky130A.tech \
+      lef read ../../tmp/merged.nom.lef \
+      def read picorv32a.def &
+```
+#### Running Placement
+
+```tcl
+run_placement
+```
+
+## Day 3 — Cell Characterization (Magic & ngspice)
+
+#### SPICE Deck Construction
+
+Standard cell characterization relies on highly accurate SPICE simulations. A deck specifies the PMOS/NMOS geometries, input stimulus, parasitic loads, and power supply. We specifically evaluate:
+
+- Rise/Fall Times: Measured between the 20% and 80% voltage thresholds.
+
+- Propagation Delay: Measured at the 50% threshold from input to output.
+
+#### Lab Execution — Custom Inverter Layout and Extraction
+Pulling the Layout:
+
+```bash
+git clone https://github.com/nickson-jose/vsdstdcelldesign.git
+magic -T sky130A.tech sky130_inv.mag &
+```
+#### Extracting Netlist in Magic tkcon:
+
+```tcl
+extract all
+ext2spice cthresh 0 rthresh 0
+ext2spice
+```
+
+#### Prepping the file by observing grid parameters:
+
+#### Transient Analysis with ngspice:
+                    
