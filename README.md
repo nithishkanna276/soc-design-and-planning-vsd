@@ -195,4 +195,224 @@ Fall transition time = Time taken for output to fall to 20% - Time taken for out
 
 20% of output = 660 mV
 
-80% of output = 2.64 V               
+80% of output = 2.64 V   
+
+Incorrectly implemented poly.9 simple rule correction
+
+Incorrectly implemented poly.9 rule no drc violation even though spacing < 0.48u
+
+Find problem in the DRC section of the old magic tech file for the skywater process and fix them.
+
+
+##Day 4 — Pre-Layout Timing & Clock Tree Synthesis (CTS)
+
+#### Abstracting the Layout with LEF
+
+The placement engine doesn't need to see the internal transistor layout of a cell; it only needs the physical boundary, metal layer routing data, and pin locations. This is abstracted into a LEF file. For seamless placement, the custom cell must be grid-aligned with its ports landing exactly on intersection points of the horizontal and vertical tracks.
+
+#### Lab Execution — Custom Cell Integration & OpenSTA
+
+#### Referencing the tracks info for grid alignment:
+
+#### Applying grid spacing in Magic:
+
+```tcl
+help grid
+grid 0.46um 0.34um 0.23um 0.17um
+```
+#### Writing the custom cell LEF:
+
+Moving LEF and lib files to the src directory of the design:
+
+Configuring config.tcl to point to the new libraries:
+
+```tcl
+set ::env(LIB_SYNTH)      "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(LIB_FASTEST)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
+set ::env(LIB_SLOWEST)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib"
+set ::env(LIB_TYPICAL)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(EXTRA_LEFS)     [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]
+```
+
+Validating abutment and successful placement of the custom inverter cell in Magic:
+
+Expanding internal views:
+
+```tcl
+expand
+```
+
+#### Pre-CTS OpenSTA Analysis:
+Setting up custom SDC constraints (my_base.sdc):
+
+```bash
+sta pre_sta.conf
+```
+
+#### Clock Tree Synthesis Execution:
+
+```tcl
+run_cts
+```
+
+#### Generating expanded timing reports via OpenROAD database:
+
+```tcl
+openroad
+read_lef /OpenLane/designs/picorv32a/runs/24-03_10-03/tmp/merged.nom.lef
+read_def /OpenLane/designs/picorv32a/runs/24-03_10-03/results/cts/picorv32a.def
+write_db pico_cts.db
+read_db pico_cts.db
+read_verilog /OpenLane/designs/picorv32a/runs/24-03_10-03/results/synthesis/picorv32a.v
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+link_design picorv32a
+read_sdc /OpenLane/designs/picorv32a/src/my_base.sdc
+set_propagated_clock [all_clocks]
+report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4
+exit
+```
+
+#### Get syntax for grid command
+help grid
+
+#### Set grid values accordingly
+grid 0.46um 0.34um 0.23um 0.17um
+
+Generate lef from the layout.
+
+Command for tkcon window to write lef
+
+Copy the newly generated lef and associated required lib files to 'picorv32a' design 'src' directory.
+
+Commands to copy necessary files to 'picorv32a' design 'src' directory
+
+#### Editing `config.tcl` to Include Custom Cell
+
+```tcl
+set ::env(LIB_SYNTH)      "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(LIB_FASTEST)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__fast.lib"
+set ::env(LIB_SLOWEST)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__slow.lib"
+set ::env(LIB_TYPICAL)    "$::env(OPENLANE_ROOT)/designs/picorv32a/src/sky130_fd_sc_hd__typical.lib"
+set ::env(EXTRA_LEFS)     [glob $::env(OPENLANE_ROOT)/designs/$::env(DESIGN_NAME)/src/*.lef]
+```
+
+#### Command to view internal connectivity layers
+expand
+
+#### Running OpenSTA (Pre-CTS Timing)
+Newly created pre_sta.conf for STA analysis in openlane directory
+
+Newly created my_base.sdc for STA analysis in openlane/designs/picorv32a/src directory based on the file openlane/scripts/base.sd
+
+```bash
+sta pre_sta.conf
+```
+
+#### Running CTS
+
+```tcl
+run_cts
+```
+
+#### Command to run OpenROAD tool
+openroad
+
+Reading lef file:
+read_lef /OpenLane/designs/picorv32a/runs/24-03_10-03/tmp/merged.nom.lef
+
+Reading def file:
+read_def /OpenLane/designs/picorv32a/runs/24-03_10-03/results/cts/picorv32a.def
+
+Creating an OpenROAD database to work with:
+write_db pico_cts.db
+
+Loading the created database in OpenROAD:
+read_db pico_cts.db
+
+Read netlist post CTS:
+read_verilog /OpenLane/designs/picorv32a/runs/24-03_10-03/results/synthesis/picorv32a.v
+
+Read library for design:
+read_liberty $::env(LIB_SYNTH_COMPLETE)
+
+Link design and library:
+link_design picorv32a
+
+Read in the custom sdc we created:
+read_sdc /OpenLane/designs/picorv32a/src/my_base.sdc
+
+Setting all cloks as propagated clocks:
+set_propagated_clock [all_clocks]
+
+Check syntax of 'report_checks' command:
+help report_checks
+
+Generating custom timing report:
+report_checks -path_delay min_max -fields {slew trans net cap input_pins} -format full_clock_expanded -digits 4
+
+Exit to OpenLANE flow
+exit
+---
+
+
+##Day 5 — Post-Route Processing & Routing Stages
+
+#### Global Routing vs. Detailed Routing
+#### Routing logic paths while adhering to complex fabrication rules is accomplished in two major stages:
+
+1. Global Routing (FastRoute): Calculates approximate pathways across a grid of routing cells, providing rough topologies and solving broad congestion.
+
+2. Detailed Routing (TritonRoute): Computes the exact tracks, physical wiring, and via drops necessary to connect the logic without violating node DRC constraints (like spacing, minimum metal area, or antenna rules).
+
+#### Lab Execution — Final Power Network and Routing
+
+#### Power Grid Generation:
+
+```tcl
+gen_pdn
+```
+Executing Detailed Route:
+
+```tcl
+run_routing
+```
+Inspecting the PDN and route output in Magic:
+
+##### Development Environment & Toolchain
+
+The OpenLANE pipeline utilizes a heavy Linux container stack. This flow and the respective labs were independently set up and processed natively on local hardware architectures, specifically validated on an Acer Aspire A514-54 and a Lenovo Flex 2-14 to test tooling compatibility across different host hardware configurations.
+
+## Tools & Environment
+
+| Tool | Purpose |
+|---|---|
+| **OpenLANE** | RTL-to-GDSII automation flow |
+| **Yosys** | RTL synthesis |
+| **OpenROAD** | Floorplan, Placement, CTS, Routing |
+| **Magic** | Layout editor, DRC, LVS |
+| **OpenSTA** | Static Timing Analysis |
+| **ngspice** | SPICE simulation |
+| **TritonRoute** | Detailed routing |
+| **Netgen** | LVS (Layout vs Schematic) |
+| **Sky130 PDK** | SkyWater 130nm open-source PDK |
+
+---
+
+## Key Learnings
+
+- Understood how a chip moves from an idea (RTL) to a manufacturable file (GDSII) using a fully open-source toolchain
+- Got hands-on with floorplanning, placement, CTS, and routing for the `picorv32a` RISC-V core
+- Learned how to characterise custom standard cells and integrate them into an existing flow
+- Gained practical experience with STA concepts — setup/hold slack, OCV, CRPR — using OpenSTA
+- Understood how parasitics from post-route SPEF extraction affect timing sign-off
+
+---
+
+## Acknowledgements
+
+A huge thank you to *Kunal Ghosh* (Co-founder, VSD Corp. Pvt. Ltd.) and *Nickson P Jose* (Physical Design Engineer, Intel) for putting together such a well-structured and genuinely practical workshop. Running a real CPU from RTL to GDSII using nothing but open-source tools is something I didn’t expect to be possible — and yet here we are.
+- **Kunal Ghosh** — Co-founder, VSD (VLSI System Design)
+- **Nickson Jose** — for the `vsdstdcelldesign` repository used in Day 3 labs
+- **NASSCOM** — for facilitating this workshop program
+
+---
