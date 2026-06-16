@@ -57,3 +57,21 @@ OpenLANE is an automated script framework that orchestrates several open-source 
 | Parasitic Extraction | OpenRCX |
 | Timing Analysis | OpenSTA |
 | Layout & DRC/LVS | "Magic, Netgen, KLayout" |
+
+#### Lab Execution — Synthesizing picorv32a
+
+Initializing the Environment:
+Working within the OpenLANE directory, the tool is launched interactively to allow step-by-step execution.
+```bash
+cd /home/vscode/Desktop/OpenLane
+make mount
+./flow.tcl -interactive
+package require openlane 1.0.2
+```
+
+#### Design Setup:
+Merging the LEF files and preparing the working directories.
+
+```tcl
+prep -design picorv32a
+```
