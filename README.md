@@ -422,3 +422,4 @@ A huge thank you to *Kunal Ghosh* (Co-founder, VSD Corp. Pvt. Ltd.) and *Nickson
 - [VSD SoC Design Workshop](https://www.vlsisystemdesign.com/)
 - [OpenLANE GitHub](https://github.com/The-OpenROAD-Project/OpenLane)
 - [SkyWater Sky130 PDK](https://github.com/google/skywater-pdk)
+- [vsdstdcelldesign](https://github.com/nickson-jose/vsdstdcelldesign)
