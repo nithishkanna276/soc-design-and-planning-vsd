@@ -4,7 +4,7 @@
 >A deep dive into the complete RTL-to-GDSII pipeline for digital VLSI System-on-Chip (SoC) design, guided by the VSD (VLSI System Design) and NASSCOM workshop.
 This repository serves as a thorough log of lab executions, technical concepts, and standard cell characterizations over the course of the program.
 
-## Day 1 — The Open-Source EDA Revolution & Sky130 PDK
+# Day 1 — The Open-Source EDA Revolution & Sky130 PDK
 
 #### Deconstructing the Chip
 
@@ -87,7 +87,7 @@ Flop Ratio Calculation:
 Flop Ratio = (Total D Flip-Flops) / (Total Cells) = 1613 / 15762 ≈ 10.23%
 ```
 
-## Day 2 — Floorplanning and Standard Cells
+# Day 2 — Floorplanning and Standard Cells
 
 #### Macro Placement and Chip Geometry
 
@@ -146,7 +146,7 @@ magic -T /home/vsduser/Desktop/OpenLane/designs/picorv32a/sky130A/libs.tech/magi
 run_placement
 ```
 
-## Day 3 — Cell Characterization (Magic & ngspice)
+# Day 3 — Cell Characterization (Magic & ngspice)
 
 #### SPICE Deck Construction
 
@@ -204,7 +204,7 @@ Incorrectly implemented poly.9 rule no drc violation even though spacing < 0.48u
 Find problem in the DRC section of the old magic tech file for the skywater process and fix them.
 
 
-##Day 4 — Pre-Layout Timing & Clock Tree Synthesis (CTS)
+# Day 4 — Pre-Layout Timing & Clock Tree Synthesis (CTS)
 
 #### Abstracting the Layout with LEF
 
@@ -355,9 +355,9 @@ exit
 ---
 
 
-##Day 5 — Post-Route Processing & Routing Stages
+# Day 5 — Post-Route Processing & Routing Stages
 
-#### Global Routing vs. Detailed Routing
+## Global Routing vs. Detailed Routing
 #### Routing logic paths while adhering to complex fabrication rules is accomplished in two major stages:
 
 1. Global Routing (FastRoute): Calculates approximate pathways across a grid of routing cells, providing rough topologies and solving broad congestion.
@@ -371,7 +371,7 @@ exit
 ```tcl
 gen_pdn
 ```
-Executing Detailed Route:
+#### Executing Detailed Route:
 
 ```tcl
 run_routing
@@ -423,4 +423,4 @@ A huge thank you to *Kunal Ghosh* (Co-founder, VSD Corp. Pvt. Ltd.) and *Nickson
 - [OpenLANE GitHub](https://github.com/The-OpenROAD-Project/OpenLane)
 - [SkyWater Sky130 PDK](https://github.com/google/skywater-pdk)
 - [vsdstdcelldesign](https://github.com/nickson-jose/vsdstdcelldesign)
-Documented by Nayana | VTU Electronics & Communication Engineering | VLSI & Physical Design
+
