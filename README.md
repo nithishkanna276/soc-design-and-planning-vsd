@@ -418,3 +418,5 @@ A huge thank you to *Kunal Ghosh* (Co-founder, VSD Corp. Pvt. Ltd.) and *Nickson
 ---
 
 ## References
+
+- [VSD SoC Design Workshop](https://www.vlsisystemdesign.com/)
