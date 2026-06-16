@@ -86,3 +86,30 @@ run_synthesis
 Flop Ratio Calculation:
 Flop Ratio = (Total D Flip-Flops) / (Total Cells) = 1613 / 15762 ≈ 10.23%
 ```
+
+## Day 2 — Floorplanning and Standard Cells
+
+#### Macro Placement and Chip Geometry
+
+Floorplanning defines the physical constraints of the design:
+
+- Utilization Factor: The area of the active netlist relative to the total core area. Starting around 0.5 (50%) leaves vital space for clock buffers and complex routing.
+
+- Aspect Ratio: The core's height divided by its width. A ratio of 1.0 yields a perfect square.
+
+#### Managing Pre-placed Cells and Decap Injection
+
+Large blocks like SRAMs or analog IP are established as pre-placed cells. They are dropped into the floorplan manually before auto-placement. To stabilize their power supply during high-frequency switching, decoupling capacitors are packed around them to provide localized charge buffers.
+
+#### Robust Power Distribution
+
+To prevent severe IR drop across the silicon, a multi-layered grid of power (VDD) and ground (VSS) rails is constructed. This grid ensures every standard cell has immediate access to power, preventing logical faults and electromigration.
+
+### Lab Execution — Floorplan and Placement
+
+#### Generating Floorplan:
+
+```tcl
+run_floorplan
+```
+                          
