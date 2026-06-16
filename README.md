@@ -174,4 +174,25 @@ ext2spice
 #### Prepping the file by observing grid parameters:
 
 #### Transient Analysis with ngspice:
-                    
+
+```bash
+ngspice sky130_inv.spice
+```
+```ngspice
+plot y vs time a
+```
+#### Rise transition time calculation
+
+Rise transition time = Time taken for output to rise to 80% - Time taken for output to rise to 20%
+
+20% of output = 660 mV
+
+80% of output = 2.64 V
+
+#### Fall transition time calculation
+
+Fall transition time = Time taken for output to fall to 20% - Time taken for output to fall to 80%
+
+20% of output = 660 mV
+
+80% of output = 2.64 V               
